@@ -1,0 +1,44 @@
+{
+  "private": true,
+  "author": "xuejian.xu <xuejian.xu@mihoyo.com>",
+  "scripts": {
+    "build": "prisma generate && umi build",
+    "dev": "umi dev",
+    "postinstall": "umi setup",
+    "setup": "umi setup",
+    "start": "npm run dev",
+    "sync": "rm -rf ../matt-tab/dist && cp -r dist ../matt-tab/dist"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.0.1",
+    "@prisma/client": "^4.11.0",
+    "@syllepsis/access-react": "^0.1.62",
+    "@syllepsis/adapter": "^0.1.61",
+    "@syllepsis/editor": "^0.1.61",
+    "@syllepsis/plugin-basic": "^0.1.61",
+    "@syllepsis/plugin-code-block": "^0.1.61",
+    "ahooks": "^3.7.5",
+    "antd": "^5.1.6",
+    "axios": "^1.3.4",
+    "classnames": "^2.3.2",
+    "prisma": "^4.11.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "umi": "^4.0.47"
+  },
+  "devDependencies": {
+    "@types/node": "^18.14.4",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
+    "@umijs/plugins": "^4.0.53",
+    "eslint": "^8.35.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^2",
+    "prettier-plugin-organize-imports": "^2",
+    "prettier-plugin-packagejson": "^2",
+    "typescript": "^4.1.2"
+  }
+}

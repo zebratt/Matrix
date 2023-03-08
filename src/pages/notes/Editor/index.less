@@ -1,0 +1,22 @@
+.editor {
+  :global(.ProseMirror) {
+    min-height: 500px;
+    padding: 16px;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+    white-space: pre-wrap;
+    box-shadow: 0 2px 10px hsla(0, 0%, 91%, 0.2);
+  }
+
+  :global(.ProseMirror p) {
+    margin: 0;
+  }
+
+  :global(.ProseMirror:focus) {
+    outline: none;
+  }
+
+  :global(.syl-toolbar-button) {
+    color: #666;
+  }
+}
