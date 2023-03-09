@@ -90,7 +90,7 @@ export default function PageNotes() {
           </Col>
           <Col>
             <Space>
-              {currentNoteId && <Button onClick={onCreate}>新建</Button>}
+              {currentNoteId && <Button onClick={onCreate}>取消</Button>}
               <Button type="primary" onClick={onSave} loading={loadingAddNote || loadingUpdateNote}>
                 {currentNoteId ? '更新' : '保存'}
               </Button>

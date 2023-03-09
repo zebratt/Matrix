@@ -1,4 +1,4 @@
-import { MenuItemType } from 'antd/es/menu/hooks/useItems';
+import type { MenuItemType } from 'antd/es/menu/hooks/useItems';
 import { SnippetsOutlined, DashboardOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 
