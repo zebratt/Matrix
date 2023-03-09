@@ -1,7 +1,7 @@
-import type { Tag } from '@prisma/client';
+import type { NoteTag } from './tags';
 
 export interface Note {
   id: number;
   html?: string;
-  tags: Tag[];
+  tags: NoteTag[];
 }

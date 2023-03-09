@@ -7,10 +7,16 @@ const prisma = new PrismaClient();
 export default async function (req: UmiApiRequest, res: UmiApiResponse) {
   if (req.method === 'POST') {
     try {
-      const note = await prisma.note.create({
+      const note = await prisma.note.update({
+        where: {
+          id: req.body.id,
+        },
         data: {
           html: req.body.html,
           tags: {
+            deleteMany: {
+              noteId: req.body.id,
+            },
             create: (req.body.tags || []).map((tag: NoteTag) => {
               return {
                 tag: {

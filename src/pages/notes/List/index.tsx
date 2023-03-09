@@ -1,11 +1,16 @@
 import { deleteNote } from '@/services/notes';
 import { useAppDispatch, useAppSelector } from '@/store/hook';
+import type { NoteTag } from '@/types/tags';
 import { useRequest } from 'ahooks';
 import { Button, Card, message, Modal, Space, Spin, Tag } from 'antd';
-import { useCallback, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import styles from './index.less';
 
-const ListArea = () => {
+interface ListAreaProps {
+  onModify: (id: number, html: string, tags: NoteTag[]) => void;
+}
+
+const ListArea: FC<ListAreaProps> = ({ onModify }) => {
   const { loading: deleteLoading, runAsync: runDelete } = useRequest(deleteNote, {
     manual: true,
   });
@@ -66,17 +71,28 @@ const ListArea = () => {
                   className={styles.card}
                   hoverable
                   extra={
-                    <Button
-                      danger
-                      size="small"
-                      onClick={(eve) => {
-                        eve.stopPropagation();
-                        onDelete(note.id);
-                      }}
-                      loading={deleteLoading}
-                    >
-                      删除
-                    </Button>
+                    <Space>
+                      <Button
+                        size="small"
+                        onClick={(eve) => {
+                          eve.stopPropagation();
+                          onModify(note.id, note.html ?? '', note.tags);
+                        }}
+                      >
+                        修改
+                      </Button>
+                      <Button
+                        danger
+                        size="small"
+                        onClick={(eve) => {
+                          eve.stopPropagation();
+                          onDelete(note.id);
+                        }}
+                        loading={deleteLoading}
+                      >
+                        删除
+                      </Button>
+                    </Space>
                   }
                   title={
                     <Space>

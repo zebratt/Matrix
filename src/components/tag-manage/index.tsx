@@ -12,11 +12,13 @@ import { useRequest } from 'ahooks';
 import { addTag } from '@/services/notes';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import type { LabeledValue } from '@/types/common';
-import type { Tag as ITag } from '@prisma/client';
 import { useAppDispatch, useAppSelector } from '@/store/hook';
+import type { NoteTag } from '@/types/tags';
 
 export interface TagManageRef {
-  tags: Pick<ITag, 'id'>[];
+  tags: NoteTag[];
+  clear: VoidFunction;
+  setTags: (tags: NoteTag[]) => void;
 }
 
 interface TagManageProps {
@@ -61,7 +63,7 @@ const TagManage: ForwardRefRenderFunction<TagManageRef, TagManageProps> = ({ cla
 
   const onTagClose = useCallback(
     (removed: LabeledValue) => {
-      setTags(tags.filter((el) => el.value === removed.value));
+      setTags(tags.filter((el) => el.value !== removed.value));
     },
     [tags],
   );
@@ -99,7 +101,20 @@ const TagManage: ForwardRefRenderFunction<TagManageRef, TagManageProps> = ({ cla
   useImperativeHandle(ref, () => ({
     tags: tags.map((el) => ({
       id: Number(el.value),
+      label: el.label,
     })),
+    clear: () => {
+      setSelected(undefined);
+      setTags([]);
+    },
+    setTags: (nextTags) => {
+      setTags(
+        nextTags.map((el) => ({
+          value: String(el.id),
+          label: el.label,
+        })),
+      );
+    },
   }));
 
   return (

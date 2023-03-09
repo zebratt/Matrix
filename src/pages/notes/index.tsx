@@ -1,19 +1,24 @@
 import Page from '@/components/page';
 import TagManage, { TagManageRef } from '@/components/tag-manage';
-import { addNote } from '@/services/notes';
+import { addNote, updateNote } from '@/services/notes';
 import { useAppDispatch, useAppSelector } from '@/store/hook';
 import { useRequest } from 'ahooks';
-import { Button, Col, message, Row } from 'antd';
-import { useCallback, useEffect, useRef } from 'react';
+import { Button, Col, message, Row, Space } from 'antd';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Editor, { EditorRef } from './Editor';
 import styles from './index.less';
 import ListArea from './List';
 import cls from 'classnames';
+import type { NoteTag } from '@/types/tags';
 
 export default function PageNotes() {
   const editorRef = useRef<EditorRef>(null);
   const tagsRef = useRef<TagManageRef>(null);
+  const [currentNoteId, setCurrentNoteId] = useState<number>();
   const { loading: loadingAddNote, runAsync: runAddNote } = useRequest(addNote, {
+    manual: true,
+  });
+  const { loading: loadingUpdateNote, runAsync: runUpdateNote } = useRequest(updateNote, {
     manual: true,
   });
   const dispatch = useAppDispatch();
@@ -26,15 +31,38 @@ export default function PageNotes() {
     };
 
     try {
-      await runAddNote(data);
-      message.success('保存成功');
+      if (currentNoteId) {
+        await runUpdateNote({
+          id: currentNoteId,
+          ...data,
+        });
+        message.success('更新成功');
+      } else {
+        await runAddNote(data);
+        message.success('保存成功');
+      }
 
       dispatch.notes.loadNotes();
       editorRef.current?.editor?.setHTML('');
+      tagsRef.current?.clear();
+      dispatch.app.updateEditorFullscreen(false);
+      setCurrentNoteId(undefined);
     } catch {
       //
     }
-  }, [runAddNote, dispatch]);
+  }, [currentNoteId, dispatch, runUpdateNote, runAddNote]);
+
+  const onModify = useCallback((id: number, html: string, tags: NoteTag[]) => {
+    editorRef.current?.editor?.setHTML(html);
+    tagsRef.current?.setTags(tags);
+    setCurrentNoteId(id);
+  }, []);
+
+  const onCreate = useCallback(() => {
+    setCurrentNoteId(undefined);
+    editorRef.current?.editor?.setHTML('');
+    tagsRef.current?.clear();
+  }, []);
 
   useEffect(() => {
     dispatch.notes.loadNotes();
@@ -48,7 +76,7 @@ export default function PageNotes() {
           [styles.listAreaFullscreen]: editorFullscreen,
         })}
       >
-        <ListArea />
+        <ListArea onModify={onModify} />
       </div>
       <div
         className={cls(styles.editorArea, {
@@ -61,9 +89,12 @@ export default function PageNotes() {
             <TagManage ref={tagsRef} />
           </Col>
           <Col>
-            <Button type="primary" onClick={onSave} loading={loadingAddNote}>
-              保存
-            </Button>
+            <Space>
+              {currentNoteId && <Button onClick={onCreate}>新建</Button>}
+              <Button type="primary" onClick={onSave} loading={loadingAddNote || loadingUpdateNote}>
+                {currentNoteId ? '更新' : '保存'}
+              </Button>
+            </Space>
           </Col>
         </Row>
       </div>

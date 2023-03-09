@@ -1,4 +1,5 @@
 import type { Note } from '@/types/notes';
+import type { NoteTag } from '@/types/tags';
 import type { Tag } from '@prisma/client';
 import request from './api';
 
@@ -17,9 +18,16 @@ export function queryTags() {
   });
 }
 
-export function addNote(data: { html?: string; tags?: Pick<Tag, 'id'>[] }) {
+export function addNote(data: { html?: string; tags?: NoteTag[] }) {
   return request.post<{ id: number }>({
     url: '/api/notes/note/add',
+    data,
+  });
+}
+
+export function updateNote(data: { id: number; html?: string; tags?: NoteTag[] }) {
+  return request.post<{ id: number }>({
+    url: '/api/notes/note/update',
     data,
   });
 }
