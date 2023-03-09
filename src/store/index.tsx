@@ -7,13 +7,15 @@ import type { RematchRootState } from '@rematch/core';
 // models
 import tags from '@/models/tags';
 import notes from '@/models/notes';
+import app from '@/models/app';
 
 export interface RootModel extends Models<RootModel> {
   tags: typeof tags;
   notes: typeof notes;
+  app: typeof app;
 }
 
-const models: RootModel = { tags, notes };
+const models: RootModel = { tags, notes, app };
 
 export const store = init<RootModel>({
   models,

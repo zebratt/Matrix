@@ -11,6 +11,9 @@ import { CodeBlockPlugin } from '@syllepsis/plugin-code-block';
 import { useImperativeHandle, forwardRef, ForwardRefRenderFunction, useEffect, useRef, useState } from 'react';
 import '@syllepsis/plugin-basic/assets/style.css';
 import styles from './index.less';
+import { FullscreenPlugin } from './plugins/fullscreen';
+import { useAppDispatch, useAppSelector } from '@/store/hook';
+import cls from 'classnames';
 
 export interface EditorRef {
   editor: SylEditor['editor'];
@@ -21,6 +24,8 @@ interface EditorProps {
 }
 
 const Editor: ForwardRefRenderFunction<EditorRef, EditorProps> = ({ initialValue }, ref) => {
+  const dispatch = useAppDispatch();
+  const { editorFullscreen } = useAppSelector((state) => state.app);
   const editorRef = useRef<SylEditor['editor']>(null);
   const [plugins] = useState([
     new BoldPlugin(),
@@ -46,6 +51,7 @@ const Editor: ForwardRefRenderFunction<EditorRef, EditorProps> = ({ initialValue
     //     }),
     // }),
     new LinkPlugin(),
+    new FullscreenPlugin(),
   ]);
 
   const [module] = useState({
@@ -60,6 +66,7 @@ const Editor: ForwardRefRenderFunction<EditorRef, EditorProps> = ({ initialValue
           UnderlinePlugin.getName(),
           // ImagePlugin.getName(),
           LinkPlugin.getName(),
+          FullscreenPlugin.getName(),
         ],
         tooltips: {
           [BulletListPlugin.getName()]: '无序列表',
@@ -69,20 +76,14 @@ const Editor: ForwardRefRenderFunction<EditorRef, EditorProps> = ({ initialValue
           [UnderlinePlugin.getName()]: '下划线',
           // [ImagePlugin.getName()]: '图片',
           [LinkPlugin.getName()]: '超链接',
+          [FullscreenPlugin.getName()]: '全屏',
         },
       },
     },
     toolbarInline: {
       Ctor: ToolbarInlineLoader,
       option: {
-        tools: [
-          BoldPlugin.getName(),
-          UnderlinePlugin.getName(),
-          {
-            content: [OrderedListPlugin.getName(), BulletListPlugin.getName()],
-            contentOption: { tipDirection: 'up' },
-          },
-        ],
+        tools: [BoldPlugin.getName(), UnderlinePlugin.getName()],
         tooltips: {
           [BoldPlugin.getName()]: '加粗',
           [UnderlinePlugin.getName()]: '下划线',
@@ -102,10 +103,17 @@ const Editor: ForwardRefRenderFunction<EditorRef, EditorProps> = ({ initialValue
   }));
 
   return (
-    <div className={styles.editor}>
+    <div
+      className={cls(styles.editor, {
+        [styles.editorFullscreen]: editorFullscreen,
+      })}
+    >
       <SylEditor
         getEditor={(editor) => {
           editorRef.current = editor;
+          editor.on(FullscreenPlugin.eventName, () => {
+            dispatch.app.toggleEditorFullscreen();
+          });
         }}
         plugins={plugins}
         module={module}

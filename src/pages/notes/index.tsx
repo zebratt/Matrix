@@ -1,13 +1,14 @@
 import Page from '@/components/page';
 import TagManage, { TagManageRef } from '@/components/tag-manage';
 import { addNote } from '@/services/notes';
-import { useAppDispatch } from '@/store/hook';
+import { useAppDispatch, useAppSelector } from '@/store/hook';
 import { useRequest } from 'ahooks';
 import { Button, Col, message, Row } from 'antd';
 import { useCallback, useEffect, useRef } from 'react';
 import Editor, { EditorRef } from './Editor';
 import styles from './index.less';
 import ListArea from './List';
+import cls from 'classnames';
 
 export default function PageNotes() {
   const editorRef = useRef<EditorRef>(null);
@@ -16,6 +17,7 @@ export default function PageNotes() {
     manual: true,
   });
   const dispatch = useAppDispatch();
+  const { editorFullscreen } = useAppSelector((state) => state.app);
 
   const onSave = useCallback(async () => {
     const data = {
@@ -41,10 +43,18 @@ export default function PageNotes() {
 
   return (
     <Page className={styles.notes}>
-      <div className={styles.listArea}>
+      <div
+        className={cls(styles.listArea, {
+          [styles.listAreaFullscreen]: editorFullscreen,
+        })}
+      >
         <ListArea />
       </div>
-      <div className={styles.editorArea}>
+      <div
+        className={cls(styles.editorArea, {
+          [styles.editorAreaFullscreen]: editorFullscreen,
+        })}
+      >
         <Editor ref={editorRef} />
         <Row justify="space-between" style={{ marginTop: 12 }}>
           <Col>
