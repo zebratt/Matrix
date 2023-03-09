@@ -1,6 +1,7 @@
 import Page from '@/components/page';
 import TagManage, { TagManageRef } from '@/components/tag-manage';
-import { addNote, queryNotes } from '@/services/notes';
+import { addNote } from '@/services/notes';
+import { useAppDispatch } from '@/store/hook';
 import { useRequest } from 'ahooks';
 import { Button, Col, message, Row } from 'antd';
 import { useCallback, useEffect, useRef } from 'react';
@@ -14,14 +15,7 @@ export default function PageNotes() {
   const { loading: loadingAddNote, runAsync: runAddNote } = useRequest(addNote, {
     manual: true,
   });
-  const {
-    data: notes = [],
-    loading: loadingQueryNotes,
-    run: runQueryNotes,
-  } = useRequest(queryNotes, {
-    manual: true,
-    onError: () => {},
-  });
+  const dispatch = useAppDispatch();
 
   const onSave = useCallback(async () => {
     const data = {
@@ -31,22 +25,24 @@ export default function PageNotes() {
 
     try {
       await runAddNote(data);
-      runQueryNotes();
       message.success('保存成功');
+
+      dispatch.notes.loadNotes();
       editorRef.current?.editor?.setHTML('');
     } catch {
       //
     }
-  }, [runAddNote, runQueryNotes]);
+  }, [runAddNote, dispatch]);
 
   useEffect(() => {
-    runQueryNotes();
-  }, [runQueryNotes]);
+    dispatch.notes.loadNotes();
+    dispatch.tags.loadTags();
+  }, [dispatch]);
 
   return (
     <Page className={styles.notes}>
       <div className={styles.listArea}>
-        <ListArea notes={notes} refresh={runQueryNotes} loading={loadingQueryNotes} />
+        <ListArea />
       </div>
       <div className={styles.editorArea}>
         <Editor ref={editorRef} />

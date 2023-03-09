@@ -9,10 +9,11 @@ import {
   useState,
 } from 'react';
 import { useRequest } from 'ahooks';
-import { addTag, queryTags } from '@/services/notes';
+import { addTag } from '@/services/notes';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import type { LabeledValue } from '@/types/common';
 import type { Tag as ITag } from '@prisma/client';
+import { useAppDispatch, useAppSelector } from '@/store/hook';
 
 export interface TagManageRef {
   tags: Pick<ITag, 'id'>[];
@@ -28,14 +29,8 @@ const TagManage: ForwardRefRenderFunction<TagManageRef, TagManageProps> = ({ cla
   const [selecting, setSelecting] = useState(false);
   const [tags, setTags] = useState<LabeledValue[]>([]);
   const [searchValue, setSearchValue] = useState('');
-  const {
-    data = [],
-    loading,
-    run,
-  } = useRequest(queryTags, {
-    manual: true,
-    onError: () => {},
-  });
+  const { tags: data, loading } = useAppSelector((state) => state.tags);
+  const dispatch = useAppDispatch();
   const { loading: addTagLoading, runAsync: addTagRun } = useRequest(addTag, {
     manual: true,
     onError: () => {},
@@ -43,8 +38,7 @@ const TagManage: ForwardRefRenderFunction<TagManageRef, TagManageProps> = ({ cla
 
   const onAdd = useCallback(() => {
     setSelecting(true);
-    run();
-  }, [run]);
+  }, []);
 
   const onSelectConfirm = useCallback(() => {
     if (selected) {
@@ -80,12 +74,12 @@ const TagManage: ForwardRefRenderFunction<TagManageRef, TagManageProps> = ({ cla
         message.success('添加成功');
         setSelected(undefined);
         setSearchValue('');
-        run();
+        dispatch.tags.loadTags();
       }
     } catch {
       //
     }
-  }, [searchValue, addTagRun, run]);
+  }, [searchValue, addTagRun, dispatch]);
 
   const notFoundContent = useMemo(() => {
     return (

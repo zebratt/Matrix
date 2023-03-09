@@ -1,7 +1,11 @@
 .listArea {
-  height: calc(100vh - 24px);
-  overflow-y: auto;
-  padding: 0 16px;
+  flex: 1;
+
+  .listCards {
+    height: calc(100vh - 24px);
+    overflow-y: auto;
+    padding: 0 16px;
+  }
 }
 
 .card {
@@ -14,4 +18,15 @@
 .modalContent {
   max-height: max(80vh, 800px);
   overflow-y: auto;
+}
+
+.content {
+  display: flex;
+}
+
+.sider {
+  width: 160px;
+  border-right: #ebebeb solid 1px;
+  padding: 48px 12px;
+  overflow: hidden;
 }

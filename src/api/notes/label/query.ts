@@ -15,6 +15,7 @@ export default async function (req: UmiApiRequest, res: UmiApiResponse) {
 
       await prisma.$disconnect();
     } catch (err) {
+      console.log(err);
       res.status(500).json({
         code: -1,
         message: err,

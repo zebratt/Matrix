@@ -8,15 +8,7 @@ import {
   UnderlinePlugin,
 } from '@syllepsis/plugin-basic';
 import { CodeBlockPlugin } from '@syllepsis/plugin-code-block';
-import {
-  useImperativeHandle,
-  forwardRef,
-  ForwardRefRenderFunction,
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-} from 'react';
+import { useImperativeHandle, forwardRef, ForwardRefRenderFunction, useEffect, useRef, useState } from 'react';
 import '@syllepsis/plugin-basic/assets/style.css';
 import styles from './index.less';
 

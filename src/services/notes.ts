@@ -24,9 +24,12 @@ export function addNote(data: { html?: string; tags?: Pick<Tag, 'id'>[] }) {
   });
 }
 
-export function queryNotes() {
-  return request.get<Note[]>({
+export function queryNotes(tagId?: number) {
+  return request.post<Note[]>({
     url: '/api/notes/note/query',
+    data: {
+      tagId,
+    },
   });
 }
 
