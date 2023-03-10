@@ -9,4 +9,6 @@ export default defineConfig({
   },
   mfsu: false,
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
+  title: 'Matrix',
+  favicons: ['/favicon.ico'],
 });
