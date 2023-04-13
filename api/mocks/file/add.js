@@ -8355,50 +8355,34 @@ var require_apiRoute = __commonJS({
   }
 });
 
-// src/.umi/api/notes/note/update.ts
-var update_exports = {};
-__export(update_exports, {
-  default: () => update_default2
+// src/.umi/api/mocks/file/add.ts
+var add_exports = {};
+__export(add_exports, {
+  default: () => add_default2
 });
-module.exports = __toCommonJS(update_exports);
+module.exports = __toCommonJS(add_exports);
 
 // src/.umi/api/_middlewares.ts
 var middlewares_default = async (req, res, next) => {
   next();
 };
 
-// src/api/notes/note/update.ts
+// src/api/mocks/file/add.ts
 var import_client = __toESM(require_client2());
 var prisma = new import_client.PrismaClient();
-async function update_default(req, res) {
+async function add_default(req, res) {
   if (req.method === "POST") {
     try {
-      const note = await prisma.note.update({
-        where: {
-          id: req.body.id
-        },
+      const data = await prisma.mockFile.create({
         data: {
-          html: req.body.html,
-          tags: {
-            deleteMany: {
-              noteId: req.body.id
-            },
-            create: (req.body.tags || []).map((tag) => {
-              return {
-                tag: {
-                  connect: {
-                    id: tag.id
-                  }
-                }
-              };
-            })
-          }
+          content: req.body.content,
+          treeId: req.body.treeId
         }
       });
       res.status(201).json({
         code: 0,
         data: {
-          id: note.id
+          id: data.id
         }
       });
       await prisma.$disconnect();
@@ -8414,15 +8398,15 @@ async function update_default(req, res) {
   }
 }
 
-// src/.umi/api/notes/note/update.ts
+// src/.umi/api/mocks/file/add.ts
 var import_apiRoute = __toESM(require_apiRoute());
 var apiRoutes = [{ "path": "mocks/file/update", "id": "mocks/file/update", "file": "mocks/file/update.ts", "absPath": "/mocks/file/update", "__content": "import type { UmiApiRequest, UmiApiResponse } from 'umi';\nimport { PrismaClient } from '@prisma/client';\n\nconst prisma = new PrismaClient();\n\nexport default async function (req: UmiApiRequest, res: UmiApiResponse) {\n  if (req.method === 'POST') {\n    try {\n      const data = await prisma.mockFile.update({\n        where: {\n          id: req.body.id,\n        },\n        data: {\n          content: req.body.content,\n        },\n      });\n\n      res.status(201).json({\n        code: 0,\n        data: {\n          id: data.id,\n        },\n      });\n\n      await prisma.$disconnect();\n    } catch (err) {\n      console.log(err);\n      res.status(500).json({\n        code: -1,\n        message: JSON.stringify(err),\n      });\n    }\n  } else {\n    res.status(405).json({ error: 'Method not allowed' });\n  }\n}\n" }, { "path": "mocks/tree/delete", "id": "mocks/tree/delete", "file": "mocks/tree/delete.ts", "absPath": "/mocks/tree/delete", "__content": "import type { UmiApiRequest, UmiApiResponse } from 'umi';\nimport { PrismaClient } from '@prisma/client';\n\nconst prisma = new PrismaClient();\n\nexport default async function (req: UmiApiRequest, res: UmiApiResponse) {\n  if (req.method === 'POST') {\n    try {\n      const data = await prisma.mockFileTree.deleteMany({\n        where: {\n          OR: [{ id: req.body.id }, { parentId: req.body.id }],\n        },\n      });\n\n      res.status(201).json({\n        code: 0,\n        data: {\n          deletedCount: data.count,\n        },\n      });\n\n      await prisma.$disconnect();\n    } catch (err) {\n      console.log(err);\n      res.status(500).json({\n        code: -1,\n        message: JSON.stringify(err),\n      });\n    }\n  } else {\n    res.status(405).json({ error: 'Method not allowed' });\n  }\n}\n" }, { "path": "notes/label/query", "id": "notes/label/query", "file": "notes/label/query.ts", "absPath": "/notes/label/query", "__content": "import type { UmiApiRequest, UmiApiResponse } from 'umi';\nimport { PrismaClient } from '@prisma/client';\n\nconst prisma = new PrismaClient();\n\nexport default async function (req: UmiApiRequest, res: UmiApiResponse) {\n  if (req.method === 'GET') {\n    try {\n      const tags = await prisma.tag.findMany();\n\n      res.status(200).json({\n        code: 0,\n        data: tags,\n      });\n\n      await prisma.$disconnect();\n    } catch (err) {\n      console.log(err);\n      res.status(500).json({\n        code: -1,\n        message: err,\n      });\n    }\n  } else {\n    res.status(405).json({ error: 'Method not allowed' });\n  }\n}\n" }, { "path": "notes/note/delete", "id": "notes/note/delete", "file": "notes/note/delete.ts", "absPath": "/notes/note/delete", "__content": "import type { UmiApiRequest, UmiApiResponse } from 'umi';\nimport { PrismaClient } from '@prisma/client';\n\nconst prisma = new PrismaClient();\n\nexport default async function (req: UmiApiRequest, res: UmiApiResponse) {\n  if (req.method === 'POST') {\n    try {\n      const note = await prisma.note.delete({\n        where: {\n          id: req.body.id,\n        },\n      });\n\n      res.status(201).json({\n        code: 0,\n        data: {\n          id: note.id,\n        },\n      });\n\n      await prisma.$disconnect();\n    } catch (err) {\n      console.log(err);\n      res.status(500).json({\n        code: -1,\n        message: JSON.stringify(err),\n      });\n    }\n  } else {\n    res.status(405).json({ error: 'Method not allowed' });\n  }\n}\n" }, { "path": "notes/note/update", "id": "notes/note/update", "file": "notes/note/update.ts", "absPath": "/notes/note/update", "__content": "import type { UmiApiRequest, UmiApiResponse } from 'umi';\nimport { PrismaClient } from '@prisma/client';\nimport type { NoteTag } from '@/types/tags';\n\nconst prisma = new PrismaClient();\n\nexport default async function (req: UmiApiRequest, res: UmiApiResponse) {\n  if (req.method === 'POST') {\n    try {\n      const note = await prisma.note.update({\n        where: {\n          id: req.body.id,\n        },\n        data: {\n          html: req.body.html,\n          tags: {\n            deleteMany: {\n              noteId: req.body.id,\n            },\n            create: (req.body.tags || []).map((tag: NoteTag) => {\n              return {\n                tag: {\n                  connect: {\n                    id: tag.id,\n                  },\n                },\n              };\n            }),\n          },\n        },\n      });\n\n      res.status(201).json({\n        code: 0,\n        data: {\n          id: note.id,\n        },\n      });\n\n      await prisma.$disconnect();\n    } catch (err) {\n      console.log(err);\n      res.status(500).json({\n        code: -1,\n        message: JSON.stringify(err),\n      });\n    }\n  } else {\n    res.status(405).json({ error: 'Method not allowed' });\n  }\n}\n" }, { "path": "mocks/file/query", "id": "mocks/file/query", "file": "mocks/file/query.ts", "absPath": "/mocks/file/query", "__content": "import type { UmiApiRequest, UmiApiResponse } from 'umi';\nimport { PrismaClient } from '@prisma/client';\n\nconst prisma = new PrismaClient();\n\nexport default async function (req: UmiApiRequest, res: UmiApiResponse) {\n  if (req.method === 'GET') {\n    try {\n      const data = await prisma.mockFile.findUnique({\n        where: {\n          id: req.body.id,\n        },\n      });\n\n      res.status(200).json({\n        code: 0,\n        data: data,\n      });\n\n      await prisma.$disconnect();\n    } catch (err) {\n      console.log(err);\n      res.status(500).json({\n        code: -1,\n        message: err,\n      });\n    }\n  } else {\n    res.status(405).json({ error: 'Method not allowed' });\n  }\n}\n" }, { "path": "mocks/tree/query", "id": "mocks/tree/query", "file": "mocks/tree/query.ts", "absPath": "/mocks/tree/query", "__content": "import type { UmiApiRequest, UmiApiResponse } from 'umi';\nimport { MockFileTree, PrismaClient } from '@prisma/client';\n\nconst prisma = new PrismaClient();\n\ntype Node = Omit<MockFileTree, 'parentId'> & { children?: Node[] };\n\nfunction buildTree(data: MockFileTree[], parentId?: number) {\n  const tree: Node[] = [];\n\n  data.forEach((node) => {\n    if ((!parentId && !node.parentId) || node.parentId === parentId) {\n      const children = buildTree(data, node.id);\n      tree.push({ ...node, children });\n    }\n  });\n\n  return tree;\n}\n\nexport default async function (req: UmiApiRequest, res: UmiApiResponse) {\n  if (req.method === 'GET') {\n    try {\n      const data = await prisma.mockFileTree.findMany();\n      const tree = buildTree(data);\n\n      res.status(200).json({\n        code: 0,\n        data: tree,\n      });\n\n      await prisma.$disconnect();\n    } catch (err) {\n      console.log(err);\n      res.status(500).json({\n        code: -1,\n        message: err,\n      });\n    }\n  } else {\n    res.status(405).json({ error: 'Method not allowed' });\n  }\n}\n" }, { "path": "notes/note/query", "id": "notes/note/query", "file": "notes/note/query.ts", "absPath": "/notes/note/query", "__content": "import type { UmiApiRequest, UmiApiResponse } from 'umi';\nimport { PrismaClient } from '@prisma/client';\n\nconst prisma = new PrismaClient();\n\nexport default async function (req: UmiApiRequest, res: UmiApiResponse) {\n  if (req.method === 'POST') {\n    try {\n      const notes = await prisma.note.findMany({\n        orderBy: {\n          updateAt: 'desc',\n        },\n        include: {\n          tags: {\n            include: {\n              tag: true,\n            },\n          },\n        },\n      });\n\n      const data = notes\n        .map((note) => ({\n          ...note,\n          tags: note.tags.map((tag) => tag.tag),\n        }))\n        .filter((note) => {\n          if (!req.body.tagId) return true;\n\n          return note.tags.map((t) => t.id).includes(Number(req.body.tagId));\n        });\n\n      res.status(200).json({\n        code: 0,\n        data,\n      });\n\n      await prisma.$disconnect();\n    } catch (err) {\n      console.log(err);\n      res.status(500).json({\n        code: -1,\n        message: err,\n      });\n    }\n  } else {\n    res.status(405).json({ error: 'Method not allowed' });\n  }\n}\n" }, { "path": "notes/label/add", "id": "notes/label/add", "file": "notes/label/add.ts", "absPath": "/notes/label/add", "__content": "import type { UmiApiRequest, UmiApiResponse } from 'umi';\nimport { PrismaClient } from '@prisma/client';\n\nconst prisma = new PrismaClient();\n\nexport default async function (req: UmiApiRequest, res: UmiApiResponse) {\n  if (req.method === 'POST') {\n    try {\n      const tag = await prisma.tag.create({\n        data: {\n          label: req.body.label,\n        },\n      });\n\n      res.status(201).json({\n        code: 0,\n        data: {\n          id: tag.id,\n        },\n      });\n\n      await prisma.$disconnect();\n    } catch (err) {\n      console.log(err);\n      res.status(500).json({\n        code: -1,\n        message: err,\n      });\n    }\n  } else {\n    res.status(405).json({ error: 'Method not allowed' });\n  }\n}\n" }, { "path": "mocks/file/add", "id": "mocks/file/add", "file": "mocks/file/add.ts", "absPath": "/mocks/file/add", "__content": "import type { UmiApiRequest, UmiApiResponse } from 'umi';\nimport { PrismaClient } from '@prisma/client';\n\nconst prisma = new PrismaClient();\n\nexport default async function (req: UmiApiRequest, res: UmiApiResponse) {\n  if (req.method === 'POST') {\n    try {\n      const data = await prisma.mockFile.create({\n        data: {\n          content: req.body.content,\n          treeId: req.body.treeId,\n        },\n      });\n\n      res.status(201).json({\n        code: 0,\n        data: {\n          id: data.id,\n        },\n      });\n\n      await prisma.$disconnect();\n    } catch (err) {\n      console.log(err);\n      res.status(500).json({\n        code: -1,\n        message: JSON.stringify(err),\n      });\n    }\n  } else {\n    res.status(405).json({ error: 'Method not allowed' });\n  }\n}\n" }, { "path": "mocks/tree/add", "id": "mocks/tree/add", "file": "mocks/tree/add.ts", "absPath": "/mocks/tree/add", "__content": "import type { UmiApiRequest, UmiApiResponse } from 'umi';\nimport { PrismaClient } from '@prisma/client';\n\nconst prisma = new PrismaClient();\n\nexport default async function (req: UmiApiRequest, res: UmiApiResponse) {\n  if (req.method === 'POST') {\n    try {\n      const data = await prisma.mockFileTree.create({\n        data: {\n          parentId: req.body.parentId,\n          path: req.body.path,\n          fullPath: req.body.fullPath,\n          desc: req.body.desc,\n        },\n      });\n\n      res.status(201).json({\n        code: 0,\n        data: {\n          id: data.id,\n        },\n      });\n\n      await prisma.$disconnect();\n    } catch (err) {\n      console.log(err);\n      res.status(500).json({\n        code: -1,\n        message: JSON.stringify(err),\n      });\n    }\n  } else {\n    res.status(405).json({ error: 'Method not allowed' });\n  }\n}\n" }, { "path": "notes/note/add", "id": "notes/note/add", "file": "notes/note/add.ts", "absPath": "/notes/note/add", "__content": "import type { UmiApiRequest, UmiApiResponse } from 'umi';\nimport { PrismaClient } from '@prisma/client';\nimport type { NoteTag } from '@/types/tags';\n\nconst prisma = new PrismaClient();\n\nexport default async function (req: UmiApiRequest, res: UmiApiResponse) {\n  if (req.method === 'POST') {\n    try {\n      const note = await prisma.note.create({\n        data: {\n          html: req.body.html,\n          tags: {\n            create: (req.body.tags || []).map((tag: NoteTag) => {\n              return {\n                tag: {\n                  connect: {\n                    id: tag.id,\n                  },\n                },\n              };\n            }),\n          },\n        },\n      });\n\n      res.status(201).json({\n        code: 0,\n        data: {\n          id: note.id,\n        },\n      });\n\n      await prisma.$disconnect();\n    } catch (err) {\n      console.log(err);\n      res.status(500).json({\n        code: -1,\n        message: JSON.stringify(err),\n      });\n    }\n  } else {\n    res.status(405).json({ error: 'Method not allowed' });\n  }\n}\n" }];
-var update_default2 = async (req, res) => {
+var add_default2 = async (req, res) => {
   const umiReq = new import_apiRoute.UmiApiRequest(req, apiRoutes);
   await umiReq.readBody();
   const umiRes = new import_apiRoute.UmiApiResponse(res);
   await new Promise((resolve) => middlewares_default(umiReq, umiRes, resolve));
-  await update_default(umiReq, umiRes);
+  await add_default(umiReq, umiRes);
 };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {});

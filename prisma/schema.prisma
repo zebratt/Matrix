@@ -35,3 +35,22 @@ model TagsOnNotes {
   @@index([tagId])
   @@index([noteId])
 }
+
+model MockFileTree {
+  id       Int        @id @default(autoincrement())
+  parentId Int?
+  path     String
+  fullPath String
+  desc     String?
+  files    MockFile[]
+}
+
+model MockFile {
+  id       Int           @id @default(autoincrement())
+  content  String        @db.Text
+  updateAt DateTime      @default(now())
+  tree     MockFileTree? @relation(fields: [treeId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  treeId   Int?
+
+  @@index([treeId])
+}
