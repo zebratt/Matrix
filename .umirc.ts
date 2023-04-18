@@ -11,4 +11,5 @@ export default defineConfig({
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   title: 'Matrix',
   favicons: ['/favicon.ico'],
+  plugins: ['./plugins/mock'],
 });

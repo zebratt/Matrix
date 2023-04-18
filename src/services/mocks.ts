@@ -14,6 +14,13 @@ export function addTreeNode(data: { parentId?: string; path: string; fullPath: s
   });
 }
 
+export function updateTreeNode(data: { id: string; path: string; fullPath: string; desc?: string }) {
+  return request.post({
+    url: '/api/mocks/tree/update',
+    data,
+  });
+}
+
 export function deleteTreeNode(data: { id: number }) {
   return request.post({
     url: '/api/mocks/tree/delete',

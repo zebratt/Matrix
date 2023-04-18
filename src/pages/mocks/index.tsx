@@ -1,18 +1,27 @@
 import styles from './index.less';
 import Page from '@/components/page';
-import { addFile, addTreeNode, deleteTreeNode, queryFile, queryTree, updateFile } from '@/services/mocks';
+import {
+  addFile,
+  addTreeNode,
+  deleteTreeNode,
+  queryFile,
+  queryTree,
+  updateFile,
+  updateTreeNode,
+} from '@/services/mocks';
 import type { TreeNode } from '@/types/mocks';
 import { useRequest } from 'ahooks';
 import { Button, Col, message, Modal, Row, Space, Spin, Tree } from 'antd';
 import type { DataNode } from 'antd/es/tree';
-import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import TreeAddModal from './components/TreeAddModal';
+import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import FormModal from './components/FormModal';
 import { useRef, useState } from 'react';
 import JSONEditor, { JSONEditorRef } from './components/Editor';
 
 const MocksPage = () => {
-  const [treeAddModalOpen, setTreeAddModalOpen] = useState(false);
+  const [formModalOpen, setFormModalOpen] = useState(false);
   const [currentNode, setCurrentNode] = useState<TreeNode>();
+  const [isEditing, setIsEditing] = useState(false);
   const { data, loading, refresh } = useRequest(queryTree);
   const jsonEditorRef = useRef<JSONEditorRef>(null);
   const { loading: jsonSaveLoading, runAsync: saveJSON } = useRequest(addFile, {
@@ -56,8 +65,19 @@ const MocksPage = () => {
                 size="small"
                 icon={<PlusCircleOutlined />}
                 onClick={() => {
+                  setIsEditing(false);
                   setCurrentNode(node);
-                  setTreeAddModalOpen(true);
+                  setFormModalOpen(true);
+                }}
+              />
+              <Button
+                type="link"
+                size="small"
+                icon={<EditOutlined />}
+                onClick={() => {
+                  setIsEditing(true);
+                  setCurrentNode(node);
+                  setFormModalOpen(true);
                 }}
               />
               <Button
@@ -90,14 +110,24 @@ const MocksPage = () => {
 
   const treeData = (data || []).map(parseTreeData);
 
-  const onCreate = async (params: any) => {
+  const onModalOk = async (params: any) => {
     try {
-      await addTreeNode({
-        ...params,
-        parentId: currentNode?.id,
-      });
+      if (isEditing) {
+        await updateTreeNode({
+          ...params,
+          id: currentNode?.id,
+        });
 
-      message.success('添加成功');
+        message.success('更新成功');
+      } else {
+        await addTreeNode({
+          ...params,
+          parentId: currentNode?.id,
+        });
+
+        message.success('添加成功');
+      }
+
       refresh();
     } catch (error) {
       //
@@ -140,8 +170,9 @@ const MocksPage = () => {
                     size="small"
                     type="primary"
                     onClick={() => {
+                      setIsEditing(false);
                       setCurrentNode(undefined);
-                      setTreeAddModalOpen(true);
+                      setFormModalOpen(true);
                     }}
                   >
                     新建
@@ -178,12 +209,13 @@ const MocksPage = () => {
           )}
         </Col>
       </Row>
-      {treeAddModalOpen && (
-        <TreeAddModal
-          parentNode={currentNode}
-          open={treeAddModalOpen}
-          onCancel={() => setTreeAddModalOpen(false)}
-          onOk={onCreate}
+      {formModalOpen && (
+        <FormModal
+          isEditing={isEditing}
+          currentNode={currentNode}
+          open={formModalOpen}
+          onCancel={() => setFormModalOpen(false)}
+          onOk={onModalOk}
         />
       )}
     </Page>
