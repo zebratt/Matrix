@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from 'umi';
 import { Layout, Menu, ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
-import { menus } from '@/contants/menu';
+import { menus } from '@/constant/menu';
 import styles from './index.less';
 import { useState } from 'react';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
@@ -20,7 +20,11 @@ export default function DefaultLayout() {
             <div className={styles.title}>{collapsed ? 'M' : 'Matrix'}</div>
             <Menu className={styles.menu} items={menus} selectedKeys={[pathname.slice(1)]} />
             <div className={styles.switch}>
-              {collapsed ? <MenuUnfoldOutlined onClick={() => setCollapsed(false)} /> : <MenuFoldOutlined onClick={() => setCollapsed(true)} />}
+              {collapsed ? (
+                <MenuUnfoldOutlined onClick={() => setCollapsed(false)} />
+              ) : (
+                <MenuFoldOutlined onClick={() => setCollapsed(true)} />
+              )}
             </div>
           </div>
         </Sider>

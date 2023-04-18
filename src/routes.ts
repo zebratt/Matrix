@@ -1,7 +1,7 @@
 export default [
   {
     path: '/',
-    redirect: '/dashboard',
+    redirect: '/mocks',
   },
   { path: '/notes', component: 'notes' },
   {
